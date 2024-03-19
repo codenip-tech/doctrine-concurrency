@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\Customer;
 use App\Form\CustomerType;
 use App\Repository\CustomerRepository;
+use App\Service\CustomerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,11 +18,25 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/customer')]
 class CustomerController extends AbstractController
 {
+    public function __construct(
+        private readonly CustomerRepository $customerRepository,
+    ) {}
+
     #[Route('/', name: 'app_customer_index', methods: ['GET'])]
-    public function index(CustomerRepository $customerRepository): Response
+    public function index(): Response
     {
         return $this->render('customer/index.html.twig', [
-            'customers' => $customerRepository->findAll(),
+            'customers' => $this->customerRepository->findAll(),
+        ]);
+    }
+
+    #[Route('/deactivate-all', name: 'deactivate-all', methods: ['GET'])]
+    public function deactivateAll(CustomerService $customerService): Response
+    {
+        $customerService->deactivateAll();
+
+        return $this->render('customer/index.html.twig', [
+            'customers' => $this->customerRepository->findAll(),
         ]);
     }
 

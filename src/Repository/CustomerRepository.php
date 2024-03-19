@@ -23,28 +23,25 @@ class CustomerRepository extends ServiceEntityRepository
         parent::__construct($registry, Customer::class);
     }
 
-    //    /**
-    //     * @return Customer[] Returns an array of Customer objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function persist(Customer $customer): void
+    {
+        $this->getEntityManager()->persist($customer);
+    }
 
-    //    public function findOneBySomeField($value): ?Customer
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
+    public function clear(): void
+    {
+        $this->getEntityManager()->clear();
+    }
+
+    public function findAllAsIterator(): iterable
+    {
+        $q = $this->getEntityManager()->createQuery('SELECT c FROM App\Entity\Customer c');
+
+        return $q->toIterable();
+    }
 }
