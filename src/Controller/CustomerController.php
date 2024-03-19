@@ -8,6 +8,7 @@ use App\Entity\Customer;
 use App\Form\CustomerType;
 use App\Repository\CustomerRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\OptimisticLockException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -58,10 +59,21 @@ class CustomerController extends AbstractController
         $form = $this->createForm(CustomerType::class, $customer);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+        $currentCustomer = $entityManager->getRepository(Customer::class)->find($customer->getId());
 
-            return $this->redirectToRoute('app_customer_index', [], Response::HTTP_SEE_OTHER);
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_customer_index', [], Response::HTTP_SEE_OTHER);
+            } catch (OptimisticLockException) {
+                $this->addFlash('error', 'This customer was already changed by another user. Please refresh before updating it.');
+
+                return $this->render('customer/edit.html.twig', [
+                    'customer' => $currentCustomer,
+                    'form' => $form,
+                ]);
+            }
         }
 
         return $this->render('customer/edit.html.twig', [

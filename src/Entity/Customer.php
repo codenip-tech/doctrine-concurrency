@@ -18,6 +18,10 @@ class Customer
     #[ORM\Column(type: 'string', length: 36)]
     private string $id;
 
+    #[ORM\Version]
+    #[ORM\Column(type: 'integer')]
+    private int $version;
+
     #[ORM\Column(length: 100)]
     private ?string $name = null;
 
@@ -40,6 +44,18 @@ class Customer
     public function getId(): string
     {
         return $this->id;
+    }
+
+    public function getCurrentVersion(): int
+    {
+        return $this->version;
+    }
+
+    public function setCurrentVersion(int $version): static
+    {
+        $this->version = $version;
+
+        return $this;
     }
 
     public function getName(): ?string

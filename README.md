@@ -1,4 +1,4 @@
-# Symfony Base Repository
+# Codenip Doctrine concurrency and batch processing
 
 This repository contains the basic configuration to run Symfony applications with MySQL database
 
@@ -14,12 +14,3 @@ This repository contains the basic configuration to run Symfony applications wit
 - `make prepare` to install dependencies with composer (once the project has been created)
 - `make logs` to see application logs
 - `make ssh` to SSH into the application container
-
-## Create and Run the application
-- [Optional] Replace all the occurrences of doctrine-concurrency in the whole project with some name more meaningful for your project
-- `make start` to build and start the containers (you can use your IDE find and replace option to do so)
-- SSH into the container with `make ssh`
-- Create a Symfony project using the CLI (e.g. `symfony new --no-git --dir project`). See `symfony`command info for more options
-- Move all the content in the `project` folder to the root of the repository (do not forget to move also `.env`file)
-- Add the content of `.gitignore` file to the root one, it should look like this
-```
